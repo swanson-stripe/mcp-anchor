@@ -1,0 +1,58 @@
+# Route to dataset mapping configuration
+# This maps API endpoints to their corresponding data adapter functions
+
+routes:
+  "/api/customers":
+    method: "getCustomers"
+    description: "Customer data"
+    cacheTtl: 300 # 5 minutes
+    
+  "/api/accounts":
+    method: "getAccounts"
+    description: "Account data"
+    cacheTtl: 300
+    
+  "/api/products":
+    method: "getProducts"
+    description: "Product catalog"
+    cacheTtl: 600 # 10 minutes
+    
+  "/api/prices":
+    method: "getPrices"
+    description: "Pricing information"
+    cacheTtl: 600
+    
+  "/api/transactions":
+    method: "getTransactions"
+    description: "Transaction records with query support"
+    cacheTtl: 60 # 1 minute
+    queryParams:
+      - "from"
+      - "to" 
+      - "limit"
+      - "cursor"
+    
+  "/api/transfers":
+    method: "getTransfers"
+    description: "Transfer records"
+    cacheTtl: 300
+    
+  "/api/balances":
+    method: "getBalances"
+    description: "Balance information"
+    cacheTtl: 30 # 30 seconds
+    
+  "/api/metrics/daily":
+    method: "getMetricsDaily"
+    description: "Daily metrics with date range support"
+    cacheTtl: 900 # 15 minutes
+    queryParams:
+      - "from"
+      - "to"
+
+# Global configuration
+config:
+  defaultLimit: 50
+  maxLimit: 1000
+  enableCaching: true
+  enableLogging: true

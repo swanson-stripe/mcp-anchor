@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dataset Injector - Browser Fixtures Demo</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .status {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        button:hover {
+            background: #0056b3;
+        }
+        
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        .warning { color: #ffc107; }
+        .info { color: #17a2b8; }
+        
+        .response {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 10px 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 14px;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .log {
+            background: #000;
+            color: #00ff00;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        
+        .network-info {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔍 Dataset Injector - Browser Fixtures Demo</h1>
+        <p>Service Worker-based fetch interception for browser environments</p>
+    </div>
+
+    <div class="status">
+        <h3>🚀 Service Worker Status</h3>
+        <div id="sw-status">Checking service worker...</div>
+        <div id="fixtures-status">Checking fixtures configuration...</div>
+    </div>
+
+    <div class="network-info">
+        <strong>💡 Developer Tips:</strong>
+        <ul>
+            <li>Open DevTools → Network tab to see intercepted requests</li>
+            <li>Look for <code>X-Fixture-Intercepted: true</code> headers</li>
+            <li>Fixture requests will show the fixture server URL</li>
+            <li>Non-fixture requests will have <code>X-SW-Passthrough: true</code></li>
+        </ul>
+    </div>
+
+    <div class="controls">
+        <button onclick="fetchCustomers()">📋 Fetch Customers</button>
+        <button onclick="fetchTransactions()">💳 Fetch Transactions</button>
+        <button onclick="fetchMetrics()">📊 Fetch Metrics</button>
+        <button onclick="fetchExternal()">🌐 Fetch External API</button>
+        <button onclick="toggleFixtures()">🔄 Toggle Fixtures</button>
+        <button onclick="clearLog()">🧹 Clear Log</button>
+    </div>
+
+    <div id="responses"></div>
+    
+    <div class="log" id="log"></div>
+
+    <script>
+        let fixturesEnabled = true;
+        
+        // Log function
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logElement = document.getElementById('log');
+            const color = {
+                info: '#00ff00',
+                error: '#ff6b6b',
+                warning: '#ffd93d',
+                success: '#6bcf7f'
+            }[type] || '#00ff00';
+            
+            logElement.innerHTML += `<span style="color: ${color}">[${timestamp}] ${message}</span>\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        // Service Worker Registration
+        async function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registration = await navigator.serviceWorker.register('/sw-fixtures.js');
+                    log('🔧 Service Worker registered successfully', 'success');
+                    
+                    // Wait for service worker to be ready
+                    await navigator.serviceWorker.ready;
+                    log('✅ Service Worker is ready', 'success');
+                    
+                    updateStatus();
+                    
+                    // Listen for updates
+                    registration.addEventListener('updatefound', () => {
+                        log('🔄 Service Worker update found', 'info');
+                    });
+                    
+                } catch (error) {
+                    log(`❌ Service Worker registration failed: ${error.message}`, 'error');
+                    document.getElementById('sw-status').innerHTML = 
+                        `<span class="error">❌ Failed to register: ${error.message}</span>`;
+                }
+            } else {
+                log('❌ Service Workers not supported', 'error');
+                document.getElementById('sw-status').innerHTML = 
+                    '<span class="error">❌ Service Workers not supported in this browser</span>';
+            }
+        }
+
+        // Update status display
+        async function updateStatus() {
+            const swStatus = document.getElementById('sw-status');
+            const fixturesStatus = document.getElementById('fixtures-status');
+            
+            if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                swStatus.innerHTML = '<span class="success">✅ Service Worker active and controlling page</span>';
+                
+                // Check fixtures configuration
+                try {
+                    const response = await fetch('/fixtures-config.json');
+                    if (response.ok) {
+                        const config = await response.json();
+                        fixturesEnabled = config.enabled;
+                        
+                        if (config.enabled) {
+                            fixturesStatus.innerHTML = 
+                                `<span class="success">🎯 Fixtures enabled → ${config.fixtureUrl}</span>`;
+                            log(`🎯 Fixtures enabled, routing to: ${config.fixtureUrl}`, 'success');
+                        } else {
+                            fixturesStatus.innerHTML = '<span class="warning">⚠️ Fixtures disabled in config</span>';
+                            log('⚠️ Fixtures disabled in configuration', 'warning');
+                        }
+                    } else {
+                        fixturesStatus.innerHTML = '<span class="warning">⚠️ No fixtures configuration found</span>';
+                        log('⚠️ No fixtures-config.json found', 'warning');
+                    }
+                } catch (error) {
+                    fixturesStatus.innerHTML = `<span class="error">❌ Config error: ${error.message}</span>`;
+                    log(`❌ Failed to load fixtures config: ${error.message}`, 'error');
+                }
+            } else {
+                swStatus.innerHTML = '<span class="warning">⚠️ Service Worker not active</span>';
+            }
+        }
+
+        // Fetch functions
+        async function fetchCustomers() {
+            await makeRequest('/api/customers', 'Customers');
+        }
+
+        async function fetchTransactions() {
+            await makeRequest('/api/transactions?limit=5', 'Transactions');
+        }
+
+        async function fetchMetrics() {
+            await makeRequest('/api/metrics/daily?from=2024-01-01&to=2024-01-31', 'Metrics');
+        }
+
+        async function fetchExternal() {
+            await makeRequest('https://jsonplaceholder.typicode.com/users/1', 'External API (JSONPlaceholder)');
+        }
+
+        // Generic request function
+        async function makeRequest(url, label) {
+            const startTime = Date.now();
+            log(`🌐 Making request: ${url}`, 'info');
+            
+            try {
+                const response = await fetch(url);
+                const duration = Date.now() - startTime;
+                
+                // Check headers for fixture interception
+                const isFixture = response.headers.get('X-Fixture-Intercepted') === 'true';
+                const isPassthrough = response.headers.get('X-SW-Passthrough') === 'true';
+                const fixtureServer = response.headers.get('X-Fixture-Server');
+                
+                let statusIcon, statusText;
+                if (isFixture) {
+                    statusIcon = '🎯';
+                    statusText = `Intercepted by fixture server (${fixtureServer})`;
+                    log(`🎯 Request intercepted → fixture server: ${fixtureServer}`, 'success');
+                } else if (isPassthrough) {
+                    statusIcon = '🌐';
+                    statusText = 'Passed through service worker';
+                    log(`🌐 Request passed through (not mapped)`, 'info');
+                } else {
+                    statusIcon = '❓';
+                    statusText = 'Direct request (no service worker)';
+                    log(`❓ Direct request (bypassed service worker)`, 'warning');
+                }
+                
+                const data = await response.json();
+                
+                // Display response
+                const responsesDiv = document.getElementById('responses');
+                const responseDiv = document.createElement('div');
+                responseDiv.innerHTML = `
+                    <h4>${statusIcon} ${label} (${response.status}) - ${duration}ms</h4>
+                    <p><strong>Status:</strong> ${statusText}</p>
+                    <div class="response">${JSON.stringify(data, null, 2).substring(0, 500)}${JSON.stringify(data, null, 2).length > 500 ? '...' : ''}</div>
+                `;
+                
+                responsesDiv.insertBefore(responseDiv, responsesDiv.firstChild);
+                
+                // Keep only last 5 responses
+                while (responsesDiv.children.length > 5) {
+                    responsesDiv.removeChild(responsesDiv.lastChild);
+                }
+                
+                log(`✅ Response received: ${response.status} (${duration}ms)`, 'success');
+                
+            } catch (error) {
+                log(`❌ Request failed: ${error.message}`, 'error');
+                
+                const responsesDiv = document.getElementById('responses');
+                const responseDiv = document.createElement('div');
+                responseDiv.innerHTML = `
+                    <h4>❌ ${label} - Failed</h4>
+                    <div class="response" style="border-left-color: #dc3545;">Error: ${error.message}</div>
+                `;
+                responsesDiv.insertBefore(responseDiv, responsesDiv.firstChild);
+            }
+        }
+
+        // Toggle fixtures
+        async function toggleFixtures() {
+            try {
+                // This would typically update the server-side config
+                // For demo purposes, we'll just show what would happen
+                fixturesEnabled = !fixturesEnabled;
+                
+                const newConfig = {
+                    enabled: fixturesEnabled,
+                    fixtureUrl: 'http://localhost:4000',
+                    routes: {
+                        '/api/customers': { dataset: 'customers.jsonl' },
+                        '/api/transactions': { dataset: 'transactions.jsonl' },
+                        '/api/metrics/daily': { dataset: 'metrics_daily.jsonl' }
+                    }
+                };
+                
+                log(`🔄 Fixtures ${fixturesEnabled ? 'enabled' : 'disabled'}`, 'info');
+                updateStatus();
+                
+                // In a real implementation, you would:
+                // 1. Update the server-side fixtures-config.json
+                // 2. Tell the service worker to reload configuration
+                
+            } catch (error) {
+                log(`❌ Failed to toggle fixtures: ${error.message}`, 'error');
+            }
+        }
+
+        // Clear log
+        function clearLog() {
+            document.getElementById('log').innerHTML = '';
+            document.getElementById('responses').innerHTML = '';
+            log('🧹 Log cleared', 'info');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            log('🚀 Page loaded, initializing...', 'info');
+            registerServiceWorker();
+        });
+    </script>
+</body>
+</html>

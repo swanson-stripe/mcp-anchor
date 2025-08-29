@@ -1,0 +1,194 @@
+{
+  "mcpVersion": "2024-11-05",
+  "name": "dataset-injector",
+  "version": "1.0.0",
+  "description": "MCP server for dataset injection and fixture management tools",
+  "author": "Dataset Injector Team",
+  "license": "MIT",
+  "runtime": {
+    "node": {
+      "command": "node",
+      "args": ["dist/mcp/server.js"]
+    }
+  },
+  "tools": [
+    {
+      "name": "scan_codebase",
+      "description": "Scan a codebase for data surface usage patterns and injectable calls",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "root": {
+            "type": "string",
+            "description": "Root path of the project to scan",
+            "default": "."
+          }
+        },
+        "required": ["root"]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "summary": {
+            "type": "object",
+            "properties": {
+              "totalFiles": {"type": "number"},
+              "scannedFiles": {"type": "number"},
+              "totalEntries": {"type": "number"},
+              "byKind": {"type": "object"},
+              "byInjectability": {
+                "type": "object",
+                "properties": {
+                  "yes": {"type": "number"},
+                  "maybe": {"type": "number"},
+                  "no": {"type": "number"}
+                }
+              }
+            }
+          },
+          "entries": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "file": {"type": "string"},
+                "line": {"type": "number"},
+                "kind": {"type": "string"},
+                "call": {"type": "string"},
+                "injectable": {"type": "string", "enum": ["yes", "maybe", "no"]},
+                "reason": {"type": "string"}
+              }
+            }
+          },
+          "errors": {
+            "type": "array",
+            "items": {"type": "string"}
+          }
+        }
+      }
+    },
+    {
+      "name": "start_fixture_server",
+      "description": "Start the fixture server with dataset and scenario configuration",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "datasetRoot": {
+            "type": "string",
+            "description": "Path to the dataset root directory",
+            "default": "../synthetic-dataset/datasets/core/v1"
+          },
+          "scenario": {
+            "type": "string",
+            "description": "Scenario name to apply (baseline, heavyTail, fraudSpike)",
+            "default": "baseline"
+          },
+          "port": {
+            "type": "number",
+            "description": "Port to run the server on",
+            "default": 4000
+          }
+        },
+        "required": []
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {"type": "string"},
+          "port": {"type": "number"},
+          "scenario": {"type": "string"},
+          "datasetRoot": {"type": "string"},
+          "status": {"type": "string", "enum": ["started", "already_running"]}
+        }
+      }
+    },
+    {
+      "name": "inject_dataset",
+      "description": "Configure dataset injection with mapping and scenario settings",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mapPath": {
+            "type": "string",
+            "description": "Path to the route mapping configuration",
+            "default": "src/config/map.yaml"
+          },
+          "scenario": {
+            "type": "string",
+            "description": "Scenario to apply to the data",
+            "default": "baseline"
+          }
+        },
+        "required": []
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "ok": {"type": "boolean"},
+          "message": {"type": "string"},
+          "mapPath": {"type": "string"},
+          "scenario": {"type": "string"},
+          "injectionEnabled": {"type": "boolean"}
+        }
+      }
+    },
+    {
+      "name": "report_injectability",
+      "description": "Generate comprehensive analysis report of data surface injectability",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "format": {
+            "type": "string",
+            "enum": ["table", "markdown", "json"],
+            "description": "Output format for the report",
+            "default": "table"
+          },
+          "verbose": {
+            "type": "boolean",
+            "description": "Include detailed fixable issues in the report",
+            "default": false
+          },
+          "includeRuntime": {
+            "type": "boolean",
+            "description": "Include runtime analysis data",
+            "default": true
+          },
+          "includeStatic": {
+            "type": "boolean",
+            "description": "Include static code analysis data",
+            "default": true
+          }
+        },
+        "required": []
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "report": {"type": "string"},
+          "format": {"type": "string"},
+          "timestamp": {"type": "string"},
+          "summary": {
+            "type": "object",
+            "properties": {
+              "totalIssues": {"type": "number"},
+              "autoFixable": {"type": "number"},
+              "manualReview": {"type": "number"}
+            }
+          }
+        }
+      }
+    }
+  ],
+  "capabilities": {
+    "tools": {
+      "listChanged": false
+    }
+  },
+  "metadata": {
+    "repository": "https://github.com/dataset-injector/mcp-anchor",
+    "homepage": "https://github.com/dataset-injector/mcp-anchor#readme",
+    "keywords": ["mcp", "dataset", "fixtures", "testing", "development", "typescript"],
+    "categories": ["development", "testing", "data"]
+  }
+}

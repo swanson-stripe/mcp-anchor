@@ -1,0 +1,224 @@
+/* Demo app styles */
+.App {
+  text-align: center;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.app-header {
+  background-color: #282c34;
+  padding: 2rem;
+  color: white;
+}
+
+.app-header h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 2rem;
+}
+
+.app-header p {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.injection-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #4CAF50;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.injection-indicator {
+  font-size: 1.2rem;
+}
+
+.app-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.demo-section {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Customers List Styles */
+.customers-list h2 {
+  color: #333;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.customers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  text-align: left;
+}
+
+.customer-card {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 1rem;
+  background-color: #fafafa;
+}
+
+.customer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.customer-id {
+  font-family: monospace;
+  font-size: 0.8rem;
+  color: #666;
+  background-color: #eee;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+}
+
+.customer-email {
+  color: #0066cc;
+  margin-bottom: 0.3rem;
+}
+
+.customer-created {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.3rem;
+}
+
+.customer-metadata {
+  font-size: 0.8rem;
+  color: #888;
+  background-color: #f0f0f0;
+  padding: 0.3rem;
+  border-radius: 3px;
+  word-break: break-all;
+}
+
+.customers-more {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  padding: 1rem;
+}
+
+/* Revenue Chart Styles */
+.revenue-chart h2 {
+  color: #333;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.metrics-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.metric-card {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.metric-card h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.9rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.metric-value {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.chart-container {
+  margin-top: 1rem;
+}
+
+.chart-container h3 {
+  text-align: left;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+/* Loading and Error States */
+.customers-loading, .customers-error,
+.chart-loading, .chart-error {
+  text-align: center;
+  padding: 2rem;
+}
+
+.customers-loading p, .chart-loading p {
+  color: #666;
+  font-style: italic;
+}
+
+.customers-error p, .chart-error p {
+  margin: 0.5rem 0;
+}
+
+/* Footer */
+.app-footer {
+  background-color: #333;
+  color: white;
+  padding: 1rem;
+  margin-top: 2rem;
+  font-size: 0.9rem;
+}
+
+.app-footer p {
+  margin: 0.25rem 0;
+  opacity: 0.8;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .app-main {
+    padding: 1rem;
+  }
+  
+  .customers-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .metrics-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .metrics-summary {
+    grid-template-columns: 1fr;
+  }
+  
+  .customer-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+  }
+}

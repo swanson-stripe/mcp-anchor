@@ -1,0 +1,360 @@
+{
+  "summary": {
+    "totalPayloads": 7,
+    "validPayloads": 1,
+    "driftingPayloads": 6,
+    "driftRate": 0.8571428571428571,
+    "topDriftPaths": [
+      {
+        "path": "#/additionalProperties/phone",
+        "count": 5,
+        "severity": "low",
+        "lastSeen": 1756506266732
+      },
+      {
+        "path": "#/additionalProperties/subscription_tier",
+        "count": 5,
+        "severity": "low",
+        "lastSeen": 1756506266732
+      },
+      {
+        "path": "#/additionalProperties/last_login",
+        "count": 5,
+        "severity": "low",
+        "lastSeen": 1756506266732
+      },
+      {
+        "path": "#/additionalProperties/preferences",
+        "count": 5,
+        "severity": "low",
+        "lastSeen": 1756506266732
+      },
+      {
+        "path": "#/required/email",
+        "count": 1,
+        "severity": "high",
+        "lastSeen": 1756506266731
+      }
+    ],
+    "suggestions": []
+  },
+  "timestamp": "2025-08-29T22:24:26.732Z",
+  "recentDrift": [
+    {
+      "objectName": "customers",
+      "isValid": true,
+      "drift": {
+        "missingFields": [],
+        "extraFields": [],
+        "typeChanges": []
+      },
+      "suggestions": [],
+      "payload": {
+        "id": "cus_123456789",
+        "email": "john@example.com",
+        "name": "John Doe",
+        "created": 1640995200,
+        "metadata": {
+          "source": "website"
+        }
+      },
+      "timestamp": 1756506266730
+    },
+    {
+      "objectName": "customers",
+      "isValid": false,
+      "drift": {
+        "missingFields": [
+          {
+            "path": "#/required/email",
+            "description": "Required field 'email' is missing",
+            "severity": "high"
+          }
+        ],
+        "extraFields": [],
+        "typeChanges": []
+      },
+      "suggestions": [],
+      "payload": {
+        "id": "cus_987654321",
+        "name": "Jane Smith",
+        "created": 1640995300,
+        "metadata": {
+          "source": "mobile"
+        }
+      },
+      "timestamp": 1756506266731
+    },
+    {
+      "objectName": "customers",
+      "isValid": false,
+      "drift": {
+        "missingFields": [],
+        "extraFields": [
+          {
+            "path": "#/additionalProperties/phone",
+            "actualType": "undefined",
+            "description": "Extra field 'phone' not in schema",
+            "severity": "low"
+          },
+          {
+            "path": "#/additionalProperties/subscription_tier",
+            "actualType": "undefined",
+            "description": "Extra field 'subscription_tier' not in schema",
+            "severity": "low"
+          },
+          {
+            "path": "#/additionalProperties/last_login",
+            "actualType": "undefined",
+            "description": "Extra field 'last_login' not in schema",
+            "severity": "low"
+          },
+          {
+            "path": "#/additionalProperties/preferences",
+            "actualType": "undefined",
+            "description": "Extra field 'preferences' not in schema",
+            "severity": "low"
+          }
+        ],
+        "typeChanges": []
+      },
+      "suggestions": [],
+      "payload": {
+        "id": "cus_555666777",
+        "email": "alice@example.com",
+        "name": "Alice Johnson",
+        "created": 1640995400,
+        "metadata": {
+          "source": "referral"
+        },
+        "phone": "+1-555-0123",
+        "subscription_tier": "premium",
+        "last_login": 1640995500,
+        "preferences": {
+          "newsletter": true,
+          "notifications": false
+        }
+      },
+      "timestamp": 1756506266731
+    },
+    {
+      "objectName": "customers",
+      "isValid": false,
+      "drift": {
+        "missingFields": [],
+        "extraFields": [
+          {
+            "path": "#/additionalProperties/phone",
+            "actualType": "undefined",
+            "description": "Extra field 'phone' not in schema",
+            "severity": "low"
+          },
+          {
+            "path": "#/additionalProperties/subscription_tier",
+            "actualType": "undefined",
+            "description": "Extra field 'subscription_tier' not in schema",
+            "severity": "low"
+          },
+          {
+            "path": "#/additionalProperties/last_login",
+            "actualType": "undefined",
+            "description": "Extra field 'last_login' not in schema",
+            "severity": "low"
+          },
+          {
+            "path": "#/additionalProperties/preferences",
+            "actualType": "undefined",
+            "description": "Extra field 'preferences' not in schema",
+            "severity": "low"
+          }
+        ],
+        "typeChanges": []
+      },
+      "suggestions": [],
+      "payload": {
+        "id": "cus_111",
+        "email": "bob@example.com",
+        "name": "Alice Johnson",
+        "created": 1640995400,
+        "metadata": {
+          "source": "referral"
+        },
+        "phone": "+1-555-0124",
+        "subscription_tier": "premium",
+        "last_login": 1640995500,
+        "preferences": {
+          "newsletter": true,
+          "notifications": false
+        }
+      },
+      "timestamp": 1756506266731
+    },
+    {
+      "objectName": "customers",
+      "isValid": false,
+      "drift": {
+        "missingFields": [],
+        "extraFields": [
+          {
+            "path": "#/additionalProperties/phone",
+            "actualType": "undefined",
+            "description": "Extra field 'phone' not in schema",
+            "severity": "low"
+          },
+          {
+            "path": "#/additionalProperties/subscription_tier",
+            "actualType": "undefined",
+            "description": "Extra field 'subscription_tier' not in schema",
+            "severity": "low"
+          },
+          {
+            "path": "#/additionalProperties/last_login",
+            "actualType": "undefined",
+            "description": "Extra field 'last_login' not in schema",
+            "severity": "low"
+          },
+          {
+            "path": "#/additionalProperties/preferences",
+            "actualType": "undefined",
+            "description": "Extra field 'preferences' not in schema",
+            "severity": "low"
+          }
+        ],
+        "typeChanges": []
+      },
+      "suggestions": [],
+      "payload": {
+        "id": "cus_222",
+        "email": "carol@example.com",
+        "name": "Alice Johnson",
+        "created": 1640995400,
+        "metadata": {
+          "source": "referral"
+        },
+        "phone": "+1-555-0125",
+        "subscription_tier": "premium",
+        "last_login": 1640995500,
+        "preferences": {
+          "newsletter": true,
+          "notifications": false
+        }
+      },
+      "timestamp": 1756506266731
+    },
+    {
+      "objectName": "customers",
+      "isValid": false,
+      "drift": {
+        "missingFields": [],
+        "extraFields": [
+          {
+            "path": "#/additionalProperties/phone",
+            "actualType": "undefined",
+            "description": "Extra field 'phone' not in schema",
+            "severity": "low"
+          },
+          {
+            "path": "#/additionalProperties/subscription_tier",
+            "actualType": "undefined",
+            "description": "Extra field 'subscription_tier' not in schema",
+            "severity": "low"
+          },
+          {
+            "path": "#/additionalProperties/last_login",
+            "actualType": "undefined",
+            "description": "Extra field 'last_login' not in schema",
+            "severity": "low"
+          },
+          {
+            "path": "#/additionalProperties/preferences",
+            "actualType": "undefined",
+            "description": "Extra field 'preferences' not in schema",
+            "severity": "low"
+          }
+        ],
+        "typeChanges": []
+      },
+      "suggestions": [],
+      "payload": {
+        "id": "cus_333",
+        "email": "dave@example.com",
+        "name": "Alice Johnson",
+        "created": 1640995400,
+        "metadata": {
+          "source": "referral"
+        },
+        "phone": "+1-555-0126",
+        "subscription_tier": "premium",
+        "last_login": 1640995500,
+        "preferences": {
+          "newsletter": true,
+          "notifications": false
+        }
+      },
+      "timestamp": 1756506266731
+    },
+    {
+      "objectName": "customers",
+      "isValid": false,
+      "drift": {
+        "missingFields": [],
+        "extraFields": [
+          {
+            "path": "#/additionalProperties/phone",
+            "actualType": "undefined",
+            "description": "Extra field 'phone' not in schema",
+            "severity": "low"
+          },
+          {
+            "path": "#/additionalProperties/subscription_tier",
+            "actualType": "undefined",
+            "description": "Extra field 'subscription_tier' not in schema",
+            "severity": "low"
+          },
+          {
+            "path": "#/additionalProperties/last_login",
+            "actualType": "undefined",
+            "description": "Extra field 'last_login' not in schema",
+            "severity": "low"
+          },
+          {
+            "path": "#/additionalProperties/preferences",
+            "actualType": "undefined",
+            "description": "Extra field 'preferences' not in schema",
+            "severity": "low"
+          }
+        ],
+        "typeChanges": []
+      },
+      "suggestions": [],
+      "payload": {
+        "id": "cus_444",
+        "email": "eve@example.com",
+        "name": "Alice Johnson",
+        "created": 1640995400,
+        "metadata": {
+          "source": "referral"
+        },
+        "phone": "+1-555-0127",
+        "subscription_tier": "premium",
+        "last_login": 1640995500,
+        "preferences": {
+          "newsletter": true,
+          "notifications": false
+        }
+      },
+      "timestamp": 1756506266732
+    }
+  ],
+  "config": {
+    "enableDetection": true,
+    "schemaBasePath": "../synthetic-dataset/datasets/core/v1/schemas",
+    "maxSamples": 10,
+    "confidenceThreshold": 0.5,
+    "severityThresholds": {
+      "missingRequired": "high",
+      "extraField": "low",
+      "typeChange": "medium"
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "enabled": true,
+  "fixtureUrl": "http://localhost:4000",
+  "routes": {
+    "/api/customers": {
+      "dataset": "customers.jsonl",
+      "cacheTTL": 3600
+    },
+    "/api/transactions": {
+      "dataset": "transactions.jsonl", 
+      "cacheTTL": 600
+    },
+    "/api/products": {
+      "dataset": "products.jsonl",
+      "cacheTTL": 3600
+    },
+    "/api/prices": {
+      "dataset": "prices.jsonl",
+      "cacheTTL": 3600
+    },
+    "/api/metrics/daily": {
+      "dataset": "metrics_daily.jsonl",
+      "cacheTTL": 300
+    },
+    "/api/balances": {
+      "dataset": "balances.jsonl",
+      "cacheTTL": 3600
+    },
+    "/api/transfers": {
+      "dataset": "transfers.jsonl",
+      "cacheTTL": 3600
+    }
+  },
+  "config": {
+    "defaultCacheTTL": 3600,
+    "enableLogging": true,
+    "version": "1.0.0"
+  }
+}

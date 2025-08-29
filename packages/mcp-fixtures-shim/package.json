@@ -1,0 +1,32 @@
+{
+  "name": "mcp-fixtures",
+  "version": "0.1.0",
+  "description": "Deprecated shim package. Use mcp-anchor instead.",
+  "type": "commonjs",
+  "bin": {
+    "mcp-fixtures": "bin.js"
+  },
+  "dependencies": {
+    "mcp-anchor": "^0.1.0"
+  },
+  "keywords": [
+    "deprecated",
+    "shim",
+    "mcp-anchor",
+    "dataset",
+    "injection",
+    "fixtures"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/mcp-anchor.git",
+    "directory": "packages/mcp-fixtures-shim"
+  },
+  "homepage": "https://github.com/your-org/mcp-anchor#readme",
+  "bugs": {
+    "url": "https://github.com/your-org/mcp-anchor/issues"
+  },
+  "deprecated": "This package has been renamed to mcp-anchor. Please use mcp-anchor instead."
+}

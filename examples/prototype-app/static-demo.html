@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dataset Injection Demo - Static Version</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .injection-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: #4CAF50;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin-top: 1rem;
+        }
+        .section {
+            margin: 2rem 0;
+        }
+        .customers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .customer-card {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 1rem;
+            background-color: #fafafa;
+        }
+        .customer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .customer-id {
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: #666;
+            background-color: #eee;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+        }
+        .metrics-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .metric-card {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-top: 0.5rem;
+        }
+        .loading {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+        .error {
+            color: red;
+            background-color: #ffebee;
+            padding: 1rem;
+            border-radius: 4px;
+        }
+        .log {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 1rem;
+            font-family: monospace;
+            font-size: 0.9rem;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 Dataset Injection Demo</h1>
+            <p>End-to-end demonstration of synthetic data injection</p>
+            <div class="injection-status">
+                <span>🎯</span>
+                <span>Fixture Injection: ENABLED</span>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>👥 Customers</h2>
+            <div id="customers-container" class="loading">Loading customers...</div>
+        </div>
+
+        <div class="section">
+            <h2>📊 Revenue Metrics</h2>
+            <div id="metrics-container" class="loading">Loading metrics...</div>
+        </div>
+
+        <div class="section">
+            <h2>🔍 API Logs</h2>
+            <div id="logs" class="log"></div>
+        </div>
+    </div>
+
+    <script>
+        // Simple API client with injection simulation
+        const API_BASE = 'http://localhost:4000';
+        
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logElement = document.getElementById('logs');
+            logElement.innerHTML += `[${timestamp}] ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        async function apiCall(endpoint, description) {
+            log(`🧪 ${description}: ${endpoint}`);
+            
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                log(`✅ ${description} success (${data.length || 'N/A'} items)`);
+                
+                return data;
+            } catch (error) {
+                log(`❌ ${description} failed: ${error.message}`);
+                throw error;
+            }
+        }
+
+        async function loadCustomers() {
+            try {
+                log('🔍 Starting customers load...');
+                const customers = await apiCall('/api/customers', 'Customers API');
+                
+                const container = document.getElementById('customers-container');
+                
+                if (customers.length === 0) {
+                    container.innerHTML = '<p>No customers found.</p>';
+                    return;
+                }
+                
+                // Print first 3 customers to console as required
+                console.log('📋 First 3 customers:', customers.slice(0, 3));
+                
+                const customersHtml = customers.slice(0, 6).map(customer => `
+                    <div class="customer-card">
+                        <div class="customer-header">
+                            <strong>${customer.name || 'Unknown'}</strong>
+                            <span class="customer-id">${customer.id}</span>
+                        </div>
+                        <div style="color: #0066cc; margin-bottom: 0.3rem;">${customer.email}</div>
+                        <div style="font-size: 0.9rem; color: #666;">
+                            Created: ${new Date(customer.created * 1000).toLocaleDateString()}
+                        </div>
+                    </div>
+                `).join('');
+                
+                container.innerHTML = `
+                    <div class="customers-grid">${customersHtml}</div>
+                    ${customers.length > 6 ? `<p style="text-align: center; margin-top: 1rem; color: #666;">... and ${customers.length - 6} more customers</p>` : ''}
+                `;
+                
+            } catch (error) {
+                document.getElementById('customers-container').innerHTML = 
+                    `<div class="error">Error loading customers: ${error.message}</div>`;
+            }
+        }
+
+        async function loadMetrics() {
+            try {
+                log('📊 Starting metrics load...');
+                const metrics = await apiCall('/api/metrics/daily', 'Daily metrics API');
+                
+                const container = document.getElementById('metrics-container');
+                
+                if (metrics.length === 0) {
+                    container.innerHTML = '<p>No metrics found.</p>';
+                    return;
+                }
+                
+                // Print first metric row to console as required
+                if (metrics.length > 0) {
+                    console.log('📈 First metric row:', metrics[0]);
+                }
+                
+                const totalGrossRevenue = metrics.reduce((sum, m) => sum + m.gross_revenue, 0);
+                const totalNetRevenue = metrics.reduce((sum, m) => sum + m.net_revenue, 0);
+                const avgAuthRate = metrics.reduce((sum, m) => sum + m.auth_rate, 0) / metrics.length;
+                const totalNewCustomers = metrics.reduce((sum, m) => sum + m.new_customers, 0);
+                
+                const formatCurrency = (cents) => new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 0,
+                }).format(cents / 100);
+                
+                container.innerHTML = `
+                    <div class="metrics-summary">
+                        <div class="metric-card">
+                            <h3>Total Gross Revenue</h3>
+                            <div class="metric-value">${formatCurrency(totalGrossRevenue)}</div>
+                        </div>
+                        <div class="metric-card">
+                            <h3>Total Net Revenue</h3>
+                            <div class="metric-value">${formatCurrency(totalNetRevenue)}</div>
+                        </div>
+                        <div class="metric-card">
+                            <h3>Avg Auth Rate</h3>
+                            <div class="metric-value">${(avgAuthRate * 100).toFixed(1)}%</div>
+                        </div>
+                        <div class="metric-card">
+                            <h3>Total New Customers</h3>
+                            <div class="metric-value">${totalNewCustomers}</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 1rem; color: #666;">
+                        Based on ${metrics.length} days of synthetic data
+                    </p>
+                `;
+                
+            } catch (error) {
+                document.getElementById('metrics-container').innerHTML = 
+                    `<div class="error">Error loading metrics: ${error.message}</div>`;
+            }
+        }
+
+        // Initialize demo
+        log('🚀 Demo app initialized');
+        log('🎯 Injection enabled - connecting to fixture server...');
+        
+        // Load data
+        Promise.all([loadCustomers(), loadMetrics()]).then(() => {
+            log('✅ Demo app fully loaded with synthetic data');
+            log('💡 Check console for printed data rows');
+        });
+    </script>
+</body>
+</html>

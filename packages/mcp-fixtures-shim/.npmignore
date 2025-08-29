@@ -1,0 +1,7 @@
+# Only include essential files in the shim package
+node_modules/
+*.log
+.DS_Store
+.env*
+*.tmp
+*.temp

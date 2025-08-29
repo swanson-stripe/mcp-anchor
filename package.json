@@ -1,0 +1,71 @@
+{
+  "name": "mcp-anchor",
+  "version": "0.1.0",
+  "description": "A TypeScript platform for dataset injection with HTTP server and CLI, featuring fetch interception",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "bin": {
+    "mcp-anchor": "dist/cli.js",
+    "mcp-fixtures": "dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./interceptors/fetch": {
+      "import": "./dist/interceptors/fetch.js",
+      "types": "./dist/interceptors/fetch.d.ts"
+    },
+    "./interceptors/supabase": {
+      "import": "./dist/interceptors/supabase.js",
+      "types": "./dist/interceptors/supabase.d.ts"
+    },
+    "./server": {
+      "import": "./dist/server/http.js",
+      "types": "./dist/server/http.d.ts"
+    },
+    "./dist/cli.js": "./dist/cli.js"
+  },
+  "scripts": {
+    "dev": "ts-node --esm src/server/http.ts",
+    "build": "tsc",
+    "start": "node dist/server/http.js",
+    "test": "ts-node --esm src/__tests__/adapter.test.ts",
+    "demo": "ts-node --esm src/demo.ts",
+    "demo:fetch": "tsx examples/node-fetch-demo.ts",
+    "demo:supabase": "tsx examples/supabase-demo.ts",
+    "demo:browser": "tsx examples/browser/server.ts",
+    "e2e:demo": "cd examples/prototype-app && node simple-test.js",
+    "mcp": "node dist/mcp/server.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": ["typescript", "fastify", "cli", "dataset", "injector"],
+  "author": "",
+  "license": "MIT",
+
+  "dependencies": {
+    "commander": "^11.1.0",
+    "fastify": "^4.24.0",
+    "ajv": "^8.12.0",
+    "ajv-formats": "^2.1.1",
+    "js-yaml": "^4.1.0",
+    "ts-morph": "^21.0.1",
+    "glob": "^10.3.0",
+    "ink": "^4.4.1",
+    "cli-table3": "^0.6.3",
+    "jscodeshift": "^0.15.1",
+    "chalk": "^5.3.0",
+    "@modelcontextprotocol/sdk": "^0.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0",
+    "ts-node": "^10.9.0",
+    "@types/js-yaml": "^4.0.9",
+    "react": "^18.2.0",
+    "@types/react": "^18.2.0",
+    "@types/jscodeshift": "^0.11.11"
+  }
+}
