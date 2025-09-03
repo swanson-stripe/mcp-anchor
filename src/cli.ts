@@ -15,6 +15,7 @@ import { runtimeTracer } from './analysis/tracer.js';
 import { startTUI, createSimpleTable } from './analysis/tui.js';
 import { ReportGenerator } from './report/generator.js';
 import { PatchManager } from './codemods/manager.js';
+import { initCommand } from './commands/init.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -273,6 +274,18 @@ program
       console.error('❌ Scan failed:', error instanceof Error ? error.message : error);
       process.exit(1);
     }
+  });
+
+// Add init command
+program
+  .command('init')
+  .description('Initialize project with synthetic dataset integration')
+  .option('--with-dataset', 'Download synthetic dataset repository', true)
+  .option('--business <name>', 'Default business persona', 'modaic')
+  .option('--stage <name>', 'Default growth stage', 'growth')
+  .option('--target <path>', 'Target directory', '.')
+  .action(async (options) => {
+    await initCommand(options);
   });
 
 program.parse();
